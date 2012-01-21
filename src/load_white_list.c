@@ -33,17 +33,18 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <fcntl.h>
-#include "mass_storage_info.h"
+#include <libusbwall.h>
+#include <linux/usb/usbwall.h>
 
 int main()
 {
   /* variables */
   FILE *fd_whitelist;
-  int fd_chardev, line_number, i, tmp_idProduct, tmp_idVendor;
-  char buffer[256], tmp_idSerialNumber[32];
+  int  res, tmp_idProduct, tmp_idVendor, line_number, i;
   /* File containing pen drives informations : white list */ 
-  char *fileinfo = "whitelist";   
-
+  char *fileinfo = "whitelist";
+  char buffer[256]; 
+    
   /* opening file containing pen drives informations */ 
   fd_whitelist = fopen(fileinfo, "rb");
   if(fd_whitelist == NULL)
@@ -52,39 +53,44 @@ int main()
     return 1;
   }
 
-  /* reading file containing pen drives informations */
+ /* reading file containing mass storages informations */
   line_number = 0;
   while(fgets(buffer,255,fd_whitelist)) 
   {
     line_number++;                                   
   }
   fseek(fd_whitelist, 0, SEEK_SET);
-  struct mass_storage_info infopendrive[line_number];
-  for(i=0;i<line_number;i++)
+
+  procfs_info_t infopendrive[line_number];
+
+  for(i=0;i<line_number;i++) 
   {
-    fscanf(fd_whitelist,"%d %d %s", &tmp_idVendor, &tmp_idProduct, infopendrive[i].idSerialNumber);
-    infopendrive[i].idVendor = tmp_idVendor;       
-    infopendrive[i].idProduct = tmp_idProduct;
-    printf("Mass storage : %x(hex) : %x(hex) : %s : is loaded in the white list\n", infopendrive[i].idVendor, infopendrive[i].idProduct, infopendrive[i].idSerialNumber);
-  }
-  
+    fscanf(fd_whitelist,"%d %d %s", &tmp_idVendor, &tmp_idProduct, infopendrive[i].info.idSerialNumber);
+    infopendrive[i].info.idVendor = tmp_idVendor;       
+    infopendrive[i].info.idProduct = tmp_idProduct;
+    printf("Mass storage : %x(hex) : %x(hex) : %s : is loaded in the white list\n", infopendrive[i].info.idVendor, infopendrive[i].info.idProduct, infopendrive[i].info.idSerialNumber);
+  }  
+
   /* closing file containing pen drives informations */
   fclose (fd_whitelist);
   
   /* communication between user space and kernel space */
-  /* opening char device */
-  fd_chardev = open("/dev/usbwall_chardev", O_RDONLY);
-  if(fd_chardev == -1)
+  /* opening procsf */
+  res = usbwall_init();
+  if (res != 0) 
   {
-    fprintf(stderr, "Cannot open the char device\n");
-    exit(1);
+    printf("The file key_ctrl doesn't exist %d\n", res);
+    return 0;
   }
 
-  /* ioctl char device : passing white list from user space to kernel space */
-  ioctl(fd_chardev,IO_SET_PENDRIVE, infopendrive);
+  /* passing white list from user space to kernel space */
+  for(i=0;i<line_number;i++) 
+  {
+    usbwall_key_add(infopendrive[1].info.idVendor, infopendrive[1].info.idProduct, infopendrive[1].info.idSerialNumber);
+  }
 
   /* closing char device */
-  close (fd_chardev);
+  usbwall_release();
   
   return 0;
 }
