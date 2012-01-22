@@ -1,3 +1,35 @@
+/**
+ * \file create_white_list.c
+ * \brief create the white list
+ * \author karthika KANDIAH
+ * \author Guillaume VIRASOLVY
+ * \version 0.1
+ * \date 3 january 2012
+ *
+ * File pendrivesinfo.c for project usbwall
+ *
+ * Made by karthika KANDIAH and Guillaume VIRASOLVY
+ * Login   <kandiah@ece.fr>   <virasolv@ece.fr>
+ *
+ * Started on  Tue Jan  10 14:49:06 2012 karthika KANDIAH
+ *
+ * Copyright (C) 2012 - karthika KANDIAH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,110 +45,122 @@
 
 void Add_PenDrive(char *file_name)
 {
-  struct usbwall_pendrives_info key;
+  struct mass_storage_info key;
   
-  int ok = 0;
-  int ko = 1;
+  /****************************** Get the vendor ID and write it in the "mass_storage_info" structure ******************************/
+
+  int ko = 0;
   int h;
   char vendor[5];
-  while(ok == 0)
+  while(ko == 0)
   {
      ko = 1;
      printf("\nEnter Vendor Id:\n");
      scanf("%s", vendor);                                      /* Get the value entered by the administrator in a char variable "vendor" */
      scanf("%*[^\n]");
      getchar();     
-     for(h=0;h<(strlen(vendor));h++)                         /* This loop enable to test the number entered : number in hexadecimal */
+     for(h=0;h<(int)(strlen(vendor));h++)                           /* This loop enable to test the number entered : number in hexadecimal */
      {
-        if((strlen(vendor) <= 4) && (vendor[h] == '\0' || vendor[h] == '0' || vendor[h] == '1' || vendor[h] == '2' || vendor[h] == '3' || vendor[h] ==  	'4' || vendor[h] == '5' || vendor[h] == '6' || vendor[h] == '7' || vendor[h] == '8' || vendor[h] == '9' || vendor[h] == 'A' || vendor[h] == 'B' 	|| vendor[h] == 'C' || vendor[h] == 'D' || vendor[h] == 'E' || vendor[h] == 'F' || vendor[h] == 'a' || vendor[h] == 'b' || vendor[h] == 'c' || 		vendor[h] == 'd' || vendor[h] == 'e' || vendor[h] == 'f'))
+        if((strlen(vendor) >= 5) || ((vendor[h] <= 0x2F) || ((vendor[h] >= 0x3A) && (vendor[h] <= 0x40)) || ((vendor[h] >= 0x47) && (vendor[h] 		<= 0x60)) || (vendor[h] >= 0x67)))
         {
-           ok = 1;                                             /* The character tested is a hexadecimal */
-        }
-        else
-        {
-           ko = 0;                                             /* The character tested is not a hexadecimal or the string "vendor" is too long */
+           ko = 0;                                             /* The character tested is a hexadecimal */
         }
      }
      if(ko == 0)                                               /* If one of the character in "vendor" is not a hexadecimal then we stay in the loop */
      {
-        ok = 0;
         printf("\n-> Warning : you have to use four characters between '0' and '9' or 'a' to 'd'\n\n");
      }
   }
   key.idVendor = strtoll(vendor,NULL,16);                      /* Convert the char value "vendor" into int. The int value is registered in idVendor */
 
 
-  ok = 0;
-  ko = 1;
+
+  /****************************** Get the product ID and write it in the "mass_storage_info" structure ******************************/
+
+  ko = 0;
   h = 0;
   char product[5];
-  while(ok == 0)
+  while(ko == 0)
   {
      ko = 1;
      printf("\nEnter Product Id:\n");
      scanf("%s", product);                                     /* Get the value entered by the administrator in a char variable "product" */
      scanf("%*[^\n]");
      getchar();     
-     for(h=0;h<(strlen(product));h++)                          /* This loop enable to test the number entered : number in hexadecimal */
+     for(h=0;h<(int)(strlen(product));h++)                          /* This loop enable to test the number entered : number in hexadecimal */
      {
-        if((strlen(product) <= 4) && (product[h] == '\0' || product[h] == '0' || product[h] == '1' || product[h] == '2' || product[h] == '3' ||         	product [h] == '4' || product[h] == '5' || product[h] == '6' || product[h] == '7' || product[h] == '8' || product[h] == '9' || product[h] == 		'A' 	|| product[h] == 'B' || product[h] == 'C' || product[h] == 'D' || product[h] == 'E' || product[h] == 'F' || product[h] == 'a' ||  		product[h] == 'b' || product[h] == 'c' || product[h] == 'd' || product[h] == 'e' || product[h] == 'f'))
+        if((strlen(product) >= 5) || ((product[h] <= 0x2F) || ((product[h] >= 0x3A) && (product[h] <= 0x40)) || ((product[h] >= 0x47) && (product[h] 		<= 0x60)) || (product[h] >= 0x67)))
         {
-           ok = 1;                                             /* The character tested is a hexadecimal */
-        }
-        else
-        {
-           ko = 0;                                             /* The character tested is not a hexadecimal or the string "vendor" is too long */
+           ko = 0;                                             /* The character tested is a hexadecimal */
         }
      }
      if(ko == 0)                                               /* If one of the character in "vendor" is not a hexadecimal then we stay in the loop */
      {
-        ok = 0;
         printf("\n-> Warning : you have to use four characters between '0' and '9' or 'a' to 'd'\n\n");
      }
   }
   key.idProduct = strtoll(product,NULL,16);                    /* Convert the char value "product" into int. The int value is registered in idProduct */
 
 
+
+  /****************************** Get the serial number and write it in the "mass_storage_info" structure ******************************/
+
   char SerialNumber[32]="";
   int i, p;
-  ok = 0;
-  do
+  ko = 0;
+  while(ko == 0)
   {
-  printf("\nEnter serial number:\n");
-  printf("-> Warning : you have to use only characters in uppercase or number between '0' and '9'\n\n");
-  fgets(SerialNumber,32,stdin);                                 /* Get the value entered by the administrator in a char variable "SerialNumber" */
-  for(i=0;i<32;i++)                                           
-  {
-    if(SerialNumber[i] >= 0x30  && SerialNumber[i] <= 0x5A)    /* User have to type the "SerialNumber" in uppercase */
+    ko = 1;
+    printf("\nEnter serial number:\n");
+    fgets(SerialNumber,32,stdin);                               /* Get the value entered by the administrator in a char variable "SerialNumber" */
+    for(i=0;i<(int)(strlen(SerialNumber)-1);i++)                                           
     {
-      //key.idSerialNumber[i] = SerialNumber[i];                 /* Copy the char value "SerialNumber" into idSerialNumber */
-      ok = 1;
+      if((strlen(SerialNumber) <= 31) && (SerialNumber[i] < 0x30  || SerialNumber[i] > 0x5A))    /* User have to type the "SerialNumber" in uppercase */
+      {
+        ko = 0;
+      }
     }
-    else if(SerialNumber[i] <= 0x30  && SerialNumber[i] >= 0x5A)
+    if(ko == 0)
     {
-      ok = 0;
-      break;
+      printf("\n-> Warning : you have to use only characters in uppercase or number between '0' and '9'\n\n");
     }
   }
-  while(ok == 0);
-  for(p=0;p<32;p++)                                           
+  for(p=0;p<(int)(strlen(SerialNumber));p++)                                           
   {
-    key.idSerialNumber[p] = SerialNumber[p];
+    key.idSerialNumber[p] = SerialNumber[p];                   /* Copy the char value "SerialNumber" into idSerialNumber */
+  }  
+
+
+
+  /****************************** Get the device's right and write it in the "mass_storage_info" structure ******************************/
+
+  int flags;
+  ko = 0;
+  while(ko == 0)
+  {
+    ko = 1;
+    printf("\nEnter the rights\n");
+    scanf("%d", &flags);
+    scanf("%*[^\n]");
+    getchar();
+    if((flags != 0) && (flags != 1))
+    {
+      ko = 0;
+      printf("\n-> Warning : type 0 to refuse the device or 1 to authorize the device\n\n");
+    }
   }
-  /*while(SerialNumber[i] >= 0x30  && SerialNumber[i] <= 0x5A)
-  {
-    key.idSerialNumber[i] = SerialNumber[i];
-    i++;
-  }*/
-  
+  key.keyflags = flags;
 
 
-  FILE* file = NULL;                                          /* Creation of a pointer of file */
-  file = fopen(file_name, "ab");                              /* We open the file in order to add contains in binary mode */
-  if(file !=NULL)                                             /* If the file can be opened */
+
+  /****************************** Get the structure "mass_storage_info" and write it in the file "whitelist" ******************************/
+
+  FILE* file = NULL;                                           /* Creation of a pointer of file */
+  file = fopen(file_name, "ab");                               /* We open the file in order to add contains in binary mode */
+  if(file !=NULL)                                              /* If the file can be opened */
   {
-    fprintf(file, "%d %d %s", key.idVendor, key.idProduct, key.idSerialNumber);    /* The whole structure is copied into the file */
-    fclose(file);                                                                  /* We close the file */
+    fprintf(file, "%d %d %d %s\n", key.keyflags, key.idVendor, key.idProduct, key.idSerialNumber);    /* The whole structure is copied into the file */
+    fclose(file);                                                                                   /* We close the file */
   }
   else
   {
@@ -137,32 +181,39 @@ void Consult_WhiteList(char *file_name)
     file = fopen(file_name,"rb");                            /*We open the file in writing */
     if (file!= NULL)
     {
-        int i, j, vendor, product;
-        int line_number = 0;                                 /* Variable used to count the line number */
-        char buffer[256];                                    /* We declare a board of 256 characters */
-        while(fgets(buffer,255,file))                        /* We read the file while it does not end */
-        {
-            line_number++;                                   /* We increase the number of line: this number corresponds to the number of pen drive*/
-        }
-        fseek(file, 0, SEEK_SET);                            /* We go back to the begining of the file */
-        struct usbwall_pendrives_info list[line_number];
+      int i, j, vendor, product, flags;
+      int line_number = 0;                                 /* Variable used to count the line number */
+      char tmp[10];
+      char buffer[256];                                    /* We declare a board of 256 characters */
+      while(fgets(buffer,255,file))                        /* We read the file while it does not end */
+      {
+          line_number++;                                   /* We increase the number of line: this number corresponds to the number of pen drive*/
+      }
+      line_number = line_number/2;
+      fseek(file, 0, SEEK_SET);                            /* We go back to the begining of the file */
+      if(line_number != 0)
+      {
+        struct mass_storage_info list[line_number];
         for(i=0;i<line_number;i++)
         {
-	    fscanf(file,"%d %d %s",&vendor,&product,list[i].idSerialNumber);
-	    list[i].idVendor = vendor;
-	    list[i].idProduct = product;
+	  fscanf(file,"%d %d %d %s",&flags,&vendor,&product,list[i].idSerialNumber);
+	  list[i].idVendor = vendor;
+	  list[i].idProduct = product;
+          list[i].keyflags = flags;
+          fscanf(file,"%s", tmp);
         }
-	printf("Device Num : Id Vendor : Id Product : Serial Number\n\n");
+        fclose(file);
+	printf("Device Num : Id Vendor : Id Product : Serial Number : Rights\n\n");
 	for(j=0;j<line_number;j++)
 	{
-	    printf("Device %d     %x : %x : %s\n",j,list[j].idVendor,list[j].idProduct,list[j].idSerialNumber);
+	  printf("Device %d     %x : %x : %s : %d\n",j,list[j].idVendor,list[j].idProduct,list[j].idSerialNumber,list[j].keyflags);
 	}
-        fclose(file);
-    }
-    else
-    {
+      } 
+      else
+      {
         printf("Sorry, there is a problem with the file: it can not be opened\n");
-    }
+     }
+   }
 }
 
 
@@ -172,60 +223,59 @@ void Consult_WhiteList(char *file_name)
  * Display the menu in the console (CLI).
  */
 
-int main()
+int main(void)
 {
 
 
     int q = 0;
     while(q == 0)
-{
-
-    int MenuChoice;
-
-    printf("\n ============================ USB WALL: MENU ============================ \n\n\n");
-    printf("    1- Add a pendrive into the white list\n\n");
-    printf("    2- Consult the white list\n\n");
-    printf("    3- Quit the program\n\n\n");
-    scanf("%d", &MenuChoice);
-    scanf("%*[^\n]");
-    getchar();
-
-
-    printf("\n\n");
-
-    switch (MenuChoice)
     {
-        case 1:
-            printf("**************** Add a pen drive into the white list ****************\n\n");
-            Add_PenDrive("list.bin");
-            break;
+
+      int MenuChoice;
+
+      printf("\n ============================ USB WALL: MENU ============================ \n\n\n");
+      printf("    1- Add a pendrive into the white list\n\n");
+      printf("    2- Consult the white list\n\n");
+      printf("    3- Quit the program\n\n\n");
+      scanf("%d", &MenuChoice);
+      scanf("%*[^\n]");
+      getchar();
+
+
+      printf("\n\n");
+
+      switch (MenuChoice)
+      {
+          case 1:
+              printf("**************** Add a pen drive into the white list ****************\n\n");
+              Add_PenDrive("whitelist");
+              break;
 
 
 
-        case 2:
-            printf("**************** Consult the the white list ****************\n\n");
-            Consult_WhiteList("list.bin");
-            break;
+          case 2:
+              printf("**************** Consult the the white list ****************\n\n");
+              Consult_WhiteList("whitelist");
+              break;
 
 
 
-        case 3:
-            printf("**************** Quit the program ****************\n\n");
-            q = 1;
+          case 3:
+              printf("**************** Quit the program ****************\n\n");
+              q = 1;
+              break;
 
-            break;
 
 
-        default:
-            printf("The number you entered was not correct. Please, enter 1, 2, 3 or 4. \n");
+          default:
+              printf("The number you entered was not correct. Please, enter 1, 2, 3 or 4. \n");
+      }
+
+      printf("\n\n");
     }
-
-    printf("\n\n");
+    return 0;
 }
 
-
-return 0;
-}
 
 
 
