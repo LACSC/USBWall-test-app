@@ -86,7 +86,7 @@ int main()
   /* passing white list from user space to kernel space */
   for(i=0;i<line_number;i++) 
   {
-    usbwall_key_add(infopendrive[1].info.idVendor, infopendrive[1].info.idProduct, infopendrive[1].info.idSerialNumber);
+    usbwall_key_add(infopendrive[i].info.idVendor, infopendrive[i].info.idProduct, infopendrive[i].info.idSerialNumber);
   }
 
   /* closing char device */
