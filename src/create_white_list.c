@@ -150,7 +150,7 @@ void Add_PenDrive(char *file_name)
     }
   }
   key.info.keyflags = flags;
-
+ 
 
 
   /****************************** Get the structure "usbwall_token_info" and write it in the file "whitelist" ******************************/
@@ -199,6 +199,7 @@ void Consult_WhiteList(char *file_name)
 	  fscanf(file,"%d %d %d %s",&flags,&vendor,&product,list[i].info.idSerialNumber);
 	  list[i].info.idVendor = vendor;
 	  list[i].info.idProduct = product;
+
           list[i].info.keyflags = flags;
           fscanf(file,"%s", tmp);
         }
