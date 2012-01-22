@@ -45,9 +45,9 @@
 
 void Add_PenDrive(char *file_name)
 {
-  struct mass_storage_info key;
+  struct usbwall_token_info key;
   
-  /****************************** Get the vendor ID and write it in the "mass_storage_info" structure ******************************/
+  /****************************** Get the vendor ID and write it in the "usbwall_token_info" structure ******************************/
 
   int ko = 0;
   int h;
@@ -71,11 +71,11 @@ void Add_PenDrive(char *file_name)
         printf("\n-> Warning : you have to use four characters between '0' and '9' or 'a' to 'd'\n\n");
      }
   }
-  key.idVendor = strtoll(vendor,NULL,16);                      /* Convert the char value "vendor" into int. The int value is registered in idVendor */
+  key.info.idVendor = strtoll(vendor,NULL,16);                      /* Convert the char value "vendor" into int. The int value is registered in idVendor */
 
 
 
-  /****************************** Get the product ID and write it in the "mass_storage_info" structure ******************************/
+  /****************************** Get the product ID and write it in the "usbwall_token_info" structure ******************************/
 
   ko = 0;
   h = 0;
@@ -99,11 +99,11 @@ void Add_PenDrive(char *file_name)
         printf("\n-> Warning : you have to use four characters between '0' and '9' or 'a' to 'd'\n\n");
      }
   }
-  key.idProduct = strtoll(product,NULL,16);                    /* Convert the char value "product" into int. The int value is registered in idProduct */
+  key.info.idProduct = strtoll(product,NULL,16);                    /* Convert the char value "product" into int. The int value is registered in idProduct */
 
 
 
-  /****************************** Get the serial number and write it in the "mass_storage_info" structure ******************************/
+  /****************************** Get the serial number and write it in the "usbwall_token_info" structure ******************************/
 
   char SerialNumber[32]="";
   int i, p;
@@ -127,12 +127,12 @@ void Add_PenDrive(char *file_name)
   }
   for(p=0;p<(int)(strlen(SerialNumber));p++)                                           
   {
-    key.idSerialNumber[p] = SerialNumber[p];                   /* Copy the char value "SerialNumber" into idSerialNumber */
+    key.info.idSerialNumber[p] = SerialNumber[p];                   /* Copy the char value "SerialNumber" into idSerialNumber */
   }  
 
 
 
-  /****************************** Get the device's right and write it in the "mass_storage_info" structure ******************************/
+  /****************************** Get the device's right and write it in the "usbwall_token_info" structure ******************************/
 
   int flags;
   ko = 0;
@@ -149,17 +149,17 @@ void Add_PenDrive(char *file_name)
       printf("\n-> Warning : type 0 to refuse the device or 1 to authorize the device\n\n");
     }
   }
-  key.keyflags = flags;
+  key.info.keyflags = flags;
 
 
 
-  /****************************** Get the structure "mass_storage_info" and write it in the file "whitelist" ******************************/
+  /****************************** Get the structure "usbwall_token_info" and write it in the file "whitelist" ******************************/
 
   FILE* file = NULL;                                           /* Creation of a pointer of file */
   file = fopen(file_name, "ab");                               /* We open the file in order to add contains in binary mode */
   if(file !=NULL)                                              /* If the file can be opened */
   {
-    fprintf(file, "%d %d %d %s\n", key.keyflags, key.idVendor, key.idProduct, key.idSerialNumber);    /* The whole structure is copied into the file */
+    fprintf(file, "%d %d %d %s\n", key.info.keyflags, key.info.idVendor, key.info.idProduct, key.info.idSerialNumber);    /* The whole structure is copied into the file */
     fclose(file);                                                                                   /* We close the file */
   }
   else
@@ -193,20 +193,20 @@ void Consult_WhiteList(char *file_name)
       fseek(file, 0, SEEK_SET);                            /* We go back to the begining of the file */
       if(line_number != 0)
       {
-        struct mass_storage_info list[line_number];
+        struct usbwall_token_info list[line_number];
         for(i=0;i<line_number;i++)
         {
-	  fscanf(file,"%d %d %d %s",&flags,&vendor,&product,list[i].idSerialNumber);
-	  list[i].idVendor = vendor;
-	  list[i].idProduct = product;
-          list[i].keyflags = flags;
+	  fscanf(file,"%d %d %d %s",&flags,&vendor,&product,list[i].info.idSerialNumber);
+	  list[i].info.idVendor = vendor;
+	  list[i].info.idProduct = product;
+          list[i].info.keyflags = flags;
           fscanf(file,"%s", tmp);
         }
         fclose(file);
 	printf("Device Num : Id Vendor : Id Product : Serial Number : Rights\n\n");
 	for(j=0;j<line_number;j++)
 	{
-	  printf("Device %d     %x : %x : %s : %d\n",j,list[j].idVendor,list[j].idProduct,list[j].idSerialNumber,list[j].keyflags);
+	  printf("Device %d     %x : %x : %s : %d\n",j,list[j].info.idVendor,list[j].info.idProduct,list[j].info.idSerialNumber,list[j].info.keyflags);
 	}
       } 
       else
