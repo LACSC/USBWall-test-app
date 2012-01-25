@@ -49,7 +49,7 @@ TARGET_LOAD       = load_white_list
 SOURCE_LOAD       =  load_white_list.c
 OBJS_LOAD         = $(SOURCE_LOAD:.c=.o)
 
-TODEL        = tags *~ .*.swp
+TODEL        = tags *~ .*.swp *.o *~ 
 
 #############################################################################
 ## rules
@@ -81,7 +81,7 @@ depend : $(SOURCE)
 .PHONY : clean doc
 
 clean : 
-	$(RM) $(RMFLAGS) $(OBJS) $(TODEL)
+	$(RM) $(RMFLAGS) $(OBJS_LOAD) $(OBJS_CREATE) $(TODEL)
 
 distclean : clean
 	$(RM) $(RMFLAGS) $(TARGET)

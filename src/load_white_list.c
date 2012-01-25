@@ -40,7 +40,7 @@ int main()
 {
   /* variables */
   FILE *fd_whitelist;
-  int  res, tmp_idProduct, tmp_idVendor, line_number, i;
+  int  res, tmp_idProduct, tmp_idVendor, tmp_keyflags, line_number, i;
   /* File containing pen drives informations : white list */ 
   char *fileinfo = "whitelist";
   char buffer[256]; 
@@ -65,10 +65,11 @@ int main()
 
   for(i=0;i<line_number;i++) 
   {
-    fscanf(fd_whitelist,"%d %d %s", &tmp_idVendor, &tmp_idProduct, infopendrive[i].info.idSerialNumber);
+    fscanf(fd_whitelist,"%d %d %d %s", &tmp_keyflags, &tmp_idVendor, &tmp_idProduct, infopendrive[i].info.idSerialNumber);
+    infopendrive[i].info.keyflags = tmp_keyflags;
     infopendrive[i].info.idVendor = tmp_idVendor;       
     infopendrive[i].info.idProduct = tmp_idProduct;
-    printf("Mass storage : %x(hex) : %x(hex) : %s : is loaded in the white list\n", infopendrive[i].info.idVendor, infopendrive[i].info.idProduct, infopendrive[i].info.idSerialNumber);
+    printf("Mass storage, right : %d, idVendor : %x(hex), idProduct : %x(hex), SerialNumber : %s, is loaded in the white list\n", infopendrive[i].info.keyflags, infopendrive[i].info.idVendor, infopendrive[i].info.idProduct, infopendrive[i].info.idSerialNumber);
   }  
 
   /* closing file containing pen drives informations */
