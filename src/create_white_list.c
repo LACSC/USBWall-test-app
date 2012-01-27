@@ -1,34 +1,36 @@
 /**
-* \file create_white_list.c
-* \brief create the white list
-* \author karthika KANDIAH
-* \author Guillaume VIRASOLVY
-* \version 0.1
-* \date 3 january 2012
-*
-* File pendrivesinfo.c for project usbwall
-*
-* Made by karthika KANDIAH and Guillaume VIRASOLVY
-* Login <kandiah@ece.fr> <virasolv@ece.fr>
-*
-* Started on Tue Jan 10 14:49:06 2012 karthika KANDIAH
-*
-* Copyright (C) 2012 - karthika KANDIAH Guillaume VIRASOLVY
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-*/
+ * \file create_white_list.c
+ * \brief create the white list
+ * \author karthika KANDIAH
+ * \author Guillaume VIRASOLVY
+ * \version 0.1
+ * \date 3 january 2012
+ *
+ * File pendrivesinfo.c for project usbwall
+ * 
+ * LACSC - ECE PARIS Engineering school 
+ *
+ * Made by karthika KANDIAH and Guillaume VIRASOLVY
+ * Login <kandiah@ece.fr> <virasolv@ece.fr>
+ *
+ * Started on Tue Jan 10 14:49:06 2012 karthika KANDIAH
+ *
+ * Copyright (C) 2012 - karthika KANDIAH Guillaume VIRASOLVY
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,11 +39,11 @@
 #include <linux/usb/usbwall.h>
 
 /**
-* \fn void Add_PenDrive(char *file_name).
-* \param file_name is the name of the file which contains the white list.
-* \return no return for this function.
-* Used to add a USB pen drive into the white list.
-*/
+ * \fn void Add_PenDrive(char *file_name).
+ * \param file_name is the name of the file which contains the white list.
+ * \return no return for this function.
+ * Used to add a USB pen drive into the white list.
+ */
 void Add_PenDrive(char *file_name)
 {
   struct usbwall_token_info key;
@@ -209,10 +211,10 @@ void Consult_WhiteList(char *file_name)
 }
 
 /**
-* \fn int main().
-* \return End of the software.
-* Display the menu in the console (CLI).
-*/
+ * \fn int main().
+ * \return End of the software.
+ * Display the menu in the console (CLI).
+ */
 int main(void)
 {
 

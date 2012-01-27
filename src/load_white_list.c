@@ -6,6 +6,8 @@
  * \date 10 january 2012
  *
  * File pendrivesinfo.c for project usbwall
+ * 
+ * LACSC - ECE PARIS Engineering school 
  *
  * Made by David FERNANDES
  * Login   <dfernand@ece.fr>
